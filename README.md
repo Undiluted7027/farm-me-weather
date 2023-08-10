@@ -1,2 +1,2 @@
-# farm-me-weather
-Repository for agriculture project
+# Farm-me-weather
+

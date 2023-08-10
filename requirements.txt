@@ -1,0 +1,8 @@
+pyserial
+joblib
+warnings
+sklearn
+numpy
+pandas
+matplotlib.pyplot
+json
