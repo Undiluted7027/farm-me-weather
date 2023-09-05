@@ -1,6 +1,9 @@
 import math
+import warnings
 import pandas as pd
+from pandas.errors import SettingWithCopyWarning
 
+warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
 LISTS = ["preci", "humi", "temp"]
 
 def HI(t,H):
@@ -87,34 +90,42 @@ def ppTemp(df):
     df["temp previous"].fillna(-10, inplace = True)
 
     for i in range(100990):
-        if df["temp previous"][i]==-10:
-            df["temp previous"][i]=(replace(i+1, df, -10, "temp previous")+df["temp previous"][i-1])/2
-        elif df["temp previous"][i]>=50:
-            df["temp previous"][i]=(df["temp previous"][i-1]+df["temp previous"][i+1])/2
+        row_copy = df.loc[i].copy()
+        if row_copy["temp previous"]==-10:
+            row_copy["temp previous"]=(replace(i+1, df, -10, "temp previous")+df["temp previous"][i-1])/2
+        elif row_copy["temp previous"]>=50:
+            row_copy["temp previous"]=(df["temp previous"][i-1]+df["temp previous"][i+1])/2
+        df.loc[i] = row_copy
 
     df["temp"].fillna(-300, inplace = True)
 
     for i in range(100990):
-        if df["temp"][i]==-300:
-            df["temp"][i]=df["temp previous"][i+1]
-        elif df["temp"][i]>100:
-            df["temp"][i]=df["temp previous"][i+1]
+        row_copy = df.loc[i].copy()
+        if row_copy["temp"]==-300:
+            row_copy["temp"]=df["temp previous"][i+1]
+        elif row_copy["temp"]>100:
+            row_copy["temp"]=df["temp previous"][i+1]
+        df.loc[i] = row_copy
 
     df["humidity"].fillna(-100, inplace = True)
 
     for i in range(100990):
-        if df["humidity"][i]==-100:
-            df["humidity"][i]=(replace(i+1, df, -100, "humidity")+df["humidity"][i-1])/2
-        elif df["humidity"][i]>100:
-            df["humidity"][i]=(df["humidity"][i-1]+df["humidity"][i+1])/2
+        row_copy = df.loc[i].copy()
+        if row_copy["humidity"]==-100:
+            row_copy["humidity"]=(replace(i+1, df, -100, "humidity")+df["humidity"][i-1])/2
+        elif row_copy["humidity"]>100:
+            row_copy["humidity"]=(df["humidity"][i-1]+df["humidity"][i+1])/2
+        df.loc[i] = row_copy
 
     df["heatindex"].fillna(-200, inplace = True)
 
     for i in range(100990):
-        if df["heatindex"][i]==-200:
-            df["heatindex"][i]=HI(df["temp previous"][i],df["humidity"][i])
-        elif df["heatindex"][i]>60:
-            df["heatindex"][i]=HI(df["temp previous"][i],df["humidity"][i])
+        row_copy = df.loc[i].copy()
+        if row_copy["heatindex"]==-200:
+            row_copy["heatindex"]=HI(row_copy["temp previous"],row_copy["humidity"])
+        elif row_copy["heatindex"]>60:
+            row_copy["heatindex"]=HI(row_copy["temp previous"],row_copy["humidity"])
+        df.loc[i] = row_copy
 
     weather_df_num=df[list(df.dtypes[df.dtypes!='object'].index)]
     df_y = weather_df_num.pop('temp')
