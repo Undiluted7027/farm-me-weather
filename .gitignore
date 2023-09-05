@@ -1,1 +1,9 @@
 *.pkl
+.vscode/
+__pycache__/
+weather/
+/.pylintrc
+predict_humidity/nH*
+predict_temperature/nT*
+predict_precipitation/nP*
+**/.ipynb_checkpoints/

@@ -1,8 +1,7 @@
 pyserial
 joblib
-warnings
-sklearn
+scikit-learn
 numpy
 pandas
-matplotlib.pyplot
-json
+matplotlib
+plotly
